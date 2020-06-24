@@ -1,7 +1,7 @@
 # CDRMEx
 Carbon Dioxide Removal (CDR) Modeling Experiments
 
-##### CC-BY-4.0, 2019 Shannon A. Fiume
+##### CC-BY-4.0, 2020 Shannon A. Fiume
 
 This project models highly speculative Carbon Dioxide Removal to understand
 its effects and speculate how much carbon may need to be removed to return to a
