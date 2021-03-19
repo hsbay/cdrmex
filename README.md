@@ -11,8 +11,8 @@ and a notebook that outlines the experiments and results.
 
 The file ONCtests.ipynb is a jupyter notebook that runs pymagicc, and requires
 wine when run on a non-windows platform. To run these experiments, download 
-[wine](https://sourceforge.net/projects/wine/files/latest/download)
-, [python](https://www.python.org/downloads/), pip, 
+[wine](https://sourceforge.net/projects/wine/files/latest/download),
+[python](https://www.python.org/downloads/), pip, 
 [pymagicc](https://github.com/openscm/pymagicc) this repo, and open the 
 notebook in jupyter. In a terminal this would look something like the following:
 
