@@ -78,6 +78,22 @@ def plthelpr(pltax,plt,**kwargs):
     pltax.grid(which=wh, linewidth=0.5, color=clr)
     plt.tight_layout(pad=0.6, h_pad=1.5)
 
+def finddate(var, function, df, datest=2005, scen='CCCx2050'):
+    droplevels=['climate_model','model','todo']
+    pf = df.xs(('MAGICC6','CDRex','not_relevant'), 
+                 level=droplevels,
+                 drop_level=True).xs(var, level='variable').loc[:,datetime(datest,1,1):]
+    if 'min' in function:
+        funct = pf.T.min()
+    elif 'max' in function:
+        funct = pf.T.max()
+    funct = funct.T.values
+    dates = []
+    for k,v in pf.items():
+        if v in (funct):
+            dates.append(k)
+    return(scen, pf.loc[:,dates])
+
 tstcfg = {
         'co2_switchfromconc2emis_year' : 30000,
         'rf_tropoz_constantafteryr' : 5000,
