@@ -79,8 +79,8 @@ def plthelpr(pltax,plt,**kwargs):
     plt.tight_layout(pad=0.6, h_pad=1.5)
 
 def finddate(var, function, df, datest=2005, scen='CCCx2050'):
-    droplevels=['climate_model','model','todo']
-    pf = df.xs(('MAGICC6','CDRex','not_relevant'), 
+    droplevels = ['climate_model','model','todo', 'scenario']
+    pf = df.xs(('MAGICC6','CDRex','not_relevant', scen, ), 
                  level=droplevels,
                  drop_level=True).xs(var, level='variable').loc[:,datetime(datest,1,1):]
     if 'min' in function:
