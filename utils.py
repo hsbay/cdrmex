@@ -127,7 +127,7 @@ def diagnose_tcr_ecs_tcre(direction, **kwargs):
     ecscfg['rf_total_constantafteryr'] = 2000
 
     tcrcfg = { 'startyear' : 1750,
-        'endyear' : 2573,
+        'endyear' : 2570,
         'core_climatesensitivity' : 3.6, }
     tcrcfg['core_climatesensitivity'] = kwargs['CORE_CLIMATESENSITIVITY']
     tcrcfg['rf_total_constantafteryr'] = 3000
