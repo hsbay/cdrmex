@@ -32,8 +32,6 @@ from pymagicc.io.utils import _get_openscm_var_from_filepath
 from pymagicc.scenarios import zero_emissions
 from pymagicc.utils import get_date_time_string
 
-SCEN_DIR = join(getcwd(), 'SCEN')
-
 # Plothelper, Set up matplotlib defs
 # plthelpr(Plot axes, plot, setables='foo')
 
@@ -120,6 +118,14 @@ def diagnose_tcr_ecs_tcre(direction, **kwargs):
     # borrows heavily from pymagicc and carries AGPL3 license.
 
     # diagnose_tcr_ecs_tcre([pos|neg], **kwargs):
+
+    if 'SCEN_DIR' in kwargs:
+        SCEN = kwargs['SCEN_DIR']
+    else:
+        SCEN = 'SCEN'
+
+    global SCEN_DIR
+    SCEN_DIR = join(getcwd(), SCEN)
 
     ecscfg = { 'startyear' : 1795,
         'endyear' : 4321,
