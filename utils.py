@@ -9,7 +9,7 @@ import shutil
 import subprocess
 import warnings
 from copy import deepcopy
-from os import listdir, makedirs
+from os import listdir, makedirs, getcwd
 from os.path import abspath, basename, dirname, exists, isfile, join
 from subprocess import PIPE
 from tempfile import mkdtemp
@@ -31,6 +31,8 @@ from pymagicc.io import MAGICCData, read_cfg_file
 from pymagicc.io.utils import _get_openscm_var_from_filepath
 from pymagicc.scenarios import zero_emissions
 from pymagicc.utils import get_date_time_string
+
+SCEN_DIR = join(getcwd(), 'SCEN')
 
 # Plothelper, Set up matplotlib defs
 # plthelpr(Plot axes, plot, setables='foo')
@@ -145,7 +147,7 @@ def diagnose_tcr_ecs_tcre(direction, **kwargs):
 def diagnose_ecs(direction, **kwargs):
     posecstest = { 'file_co2_conc' : 'ABRUPT2XCO2_CO2_CONC.IN',
        'testscen': 'abrupt-2xCO2' }
-    negecstest = { 'file_co2_conc' : 'ABRUPT0P5XCO2_CO2_CONC.IN',
+    negecstest = { 'file_co2_conc' : join(SCEN_DIR, 'ABRUPT0P5XCO2_CO2_CONC.IN'),
        'testscen' : 'abrupt-0p5xCO2' }
 
     if 'pos' in direction:
@@ -176,7 +178,7 @@ def diagnose_ecs(direction, **kwargs):
 def diagnose_tcr_tcre(direction, **kwargs):
     postcrtest = { 'file_co2_conc' : '1PCTCO2_CO2_CONC.IN',
        'testscen' : '1pctCO2' }
-    negtcrtest = { 'file_co2_conc' : '1PCTCDR_CO2_CONC.IN',
+    negtcrtest = { 'file_co2_conc' : join(SCEN_DIR, '1PCTCDR_CO2_CONC.IN'),
        'testscen' : '1pctCO2-cdr' }
 
     if 'pos' in direction:
