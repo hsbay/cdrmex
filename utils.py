@@ -1,4 +1,4 @@
-# CDRMEX/utilspy
+# CDRMEX/utils.py
 # utility functions for CDRMEx, CC-BY-40 2021, @safiume
 
 # estimate CS routine heavily borrows from pymagicccorepy
@@ -9,8 +9,8 @@ import shutil
 import subprocess
 import warnings
 from copy import deepcopy
-from os import listdir, makedirs, getcwd
-from os.path import abspath, basename, dirname, exists, isfile, join
+from os import listdir, makedirs
+from os.path import abspath, basename, dirname, exists, isfile, join, split
 from subprocess import PIPE
 from tempfile import mkdtemp
 import numpy as np
@@ -31,8 +31,6 @@ from pymagicc.io import MAGICCData, read_cfg_file
 from pymagicc.io.utils import _get_openscm_var_from_filepath
 from pymagicc.scenarios import zero_emissions
 from pymagicc.utils import get_date_time_string
-
-SCEN_DIR = join(getcwd(), 'SCEN')
 
 # Plothelper, Set up matplotlib defs
 # plthelpr(Plot axes, plot, setables='foo')
@@ -121,6 +119,27 @@ def diagnose_tcr_ecs_tcre(direction, **kwargs):
 
     # diagnose_tcr_ecs_tcre([pos|neg], **kwargs):
 
+    global abrupt0p5
+    global onepctcdr
+    cwd = split(abspath('__file__'))[0]
+
+    if not 'SCEN_DIR' in kwargs:
+        SCEN = 'SCEN'
+    else:
+        try:
+            SCEN = kwargs['SCEN_DIR']
+            SCEN_DIR = join(cwd, SCEN)
+            abrupt0p5 = join(SCEN_DIR, 'ABRUPT0P5XCO2_CO2_CONC.IN')
+            onepctcdr = join(SCEN_DIR, '1PCTCDR_CO2_CONC.IN')
+            for file in (abrupt0p5, onepctcdr):
+               if isfile(file) is False:
+                   raise FileNotFoundError from FileNotFoundError
+        except FileNotFoundError:
+            SCEN = 'SCEN'
+    SCEN_DIR = join(cwd, SCEN)
+    abrupt0p5 = join(SCEN_DIR, 'ABRUPT0P5XCO2_CO2_CONC.IN')
+    onepctcdr = join(SCEN_DIR, '1PCTCDR_CO2_CONC.IN')
+
     ecscfg = { 'startyear' : 1795,
         'endyear' : 4321,
         'core_climatesensitivity' : 3.6, }
@@ -147,7 +166,7 @@ def diagnose_tcr_ecs_tcre(direction, **kwargs):
 def diagnose_ecs(direction, **kwargs):
     posecstest = { 'file_co2_conc' : 'ABRUPT2XCO2_CO2_CONC.IN',
        'testscen': 'abrupt-2xCO2' }
-    negecstest = { 'file_co2_conc' : join(SCEN_DIR, 'ABRUPT0P5XCO2_CO2_CONC.IN'),
+    negecstest = { 'file_co2_conc' : abrupt0p5,
        'testscen' : 'abrupt-0p5xCO2' }
 
     if 'pos' in direction:
@@ -178,7 +197,7 @@ def diagnose_ecs(direction, **kwargs):
 def diagnose_tcr_tcre(direction, **kwargs):
     postcrtest = { 'file_co2_conc' : '1PCTCO2_CO2_CONC.IN',
        'testscen' : '1pctCO2' }
-    negtcrtest = { 'file_co2_conc' : join(SCEN_DIR, '1PCTCDR_CO2_CONC.IN'),
+    negtcrtest = { 'file_co2_conc' : onepctcdr,
        'testscen' : '1pctCO2-cdr' }
 
     if 'pos' in direction:
