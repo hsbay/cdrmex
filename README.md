@@ -9,7 +9,8 @@ carbon dioxide concentration of 280 ppm. The experiments are performed in MAGICC
 and have been run on pymagicc. The repo contains the scenario input files for MAGICC
 and a notebook that outlines the experiments and results.
 
-The file ONCtests.ipynb is a jupyter notebook that runs pymagicc, and requires
+The experiments are shown in [ONCtests.ipynb](ONCtests.ipynb) which is 
+a jupyter notebook that runs pymagicc, and requires windows or 
 wine when run on a non-windows platform. To run these experiments, download 
 [wine](https://sourceforge.net/projects/wine/files/latest/download),
 [python](https://www.python.org/downloads/), pip, 
