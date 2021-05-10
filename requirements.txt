@@ -4,3 +4,4 @@ pandas==1.1.5
 matplotlib==3.3.3
 f90nml==1.1.2
 seaborn==0.11.1
+jupyter==1.0.0
