@@ -17,17 +17,19 @@ wine when run on a non-windows platform. To run these experiments, download
 [pymagicc](https://github.com/openscm/pymagicc), this repo, and open the 
 notebook in jupyter.
 
-Install and run the workbook:
-[wine](https://sourceforge.net/projects/wine/files/latest/download),
-Open a terminal, and add wine to the path.
+#### Install and run the workbook
+Download/install [wine](https://sourceforge.net/projects/wine/files/latest/download)
 
-Next run:
+Next open a terminal, and add wine to the path.
+
+Then run:
 ```
 pip install -r requirements.txt
 jupyter-notebook ONCtests.ipynb
 ```
 
-To install for development, open a terminal and do something like the following:
+#### Install for development 
+Open a terminal and do something like the following:
 
 ```
 which wine
