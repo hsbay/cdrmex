@@ -245,7 +245,6 @@ def get_ecs_from_diagnosis_results( results_ecs_run):
     ecs = abs(ecs)
     unit = global_temp.get_unique_meta('unit', no_duplicates=True)
     ecs = ecs * unit_registry(unit)
-
     return ecs
 
 def get_tcr_tcre_from_diagnosis_results( results_tcr_tcre_run):
@@ -271,8 +270,7 @@ def get_tcr_tcre_from_diagnosis_results( results_tcr_tcre_run):
 
     tcr = float(global_temp.filter(time=tcr_time).values.squeeze())
     tcr_unit = global_temp.get_unique_meta('unit', no_duplicates=True)
-    tcr = tcr * unit_registry(tcr_unit)
-
+    
     tcre_cumulative_emms = float(
         global_inverse_co2_emms.filter(
          year=range(tcr_start_time.year, tcr_time.year)
@@ -280,12 +278,10 @@ def get_tcr_tcre_from_diagnosis_results( results_tcr_tcre_run):
     )
     emms_unit = global_inverse_co2_emms.get_unique_meta('unit', no_duplicates=True)
     years = global_inverse_co2_emms['year'].values.squeeze()
-    tcre_cumulative_emms_unit = unit_registry(emms_unit) * unit_registry('yr')
-    tcre_cumulative_emms = tcre_cumulative_emms * tcre_cumulative_emms_unit
-    
-    tcre = tcr / tcre_cumulative_emms
 
-    return tcr, tcre
+    tcre = 1000 * tcr / tcre_cumulative_emms
+    tcre = (tcre, 'kelvin / 1000 GtC')
+    return tcr, tcre 
 
 def get_ecs_ecs_start_yr_from_CO2_concs( df_co2_concs):
     co2_concs = df_co2_concs.timeseries()
