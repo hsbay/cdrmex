@@ -32,6 +32,9 @@ from pymagicc.io.utils import _get_openscm_var_from_filepath
 from pymagicc.scenarios import zero_emissions
 from pymagicc.utils import get_date_time_string
 
+degC = '$^{\circ}$C'
+wm2 = '$W / m^2$'
+
 # Plothelper, Set up matplotlib defs
 # plthelpr(Plot axes, plot, setables='foo')
 
@@ -53,11 +56,24 @@ def gline(profile):
     x = datetime(start,1,1,0), datetime(end,1,1,1)
     return(x)
 
+def txthelpers(title, ylabel):
+    if ylabel == 'K':
+       ylabel = degC
+    elif 'W' in ylabel:
+        ylabel = wm2
+    elif 'CO2e' in ylabel:
+        ylabel = 'CO$_2$eq ppm'
+    if '2' in title:
+        st = re.compile(r'(N|O)2')
+        title = st.sub(r'\1$_2$',title)
+    return(title, ylabel)
+
 def plthelpr(pltax,plt,**kwargs):
     x = gline(kwargs['profile'])
     mlocator = mdates.YearLocator(50, month=1, day=1)
     minloc = mdates.YearLocator(10, month=1, day=1)
     formatter = mdates.ConciseDateFormatter(mlocator)
+    var, ylab = txthelpers(title, ylabel)
     pltax.set_title(var)                        
     pltax.set_xlim(x)
     pltax.set_ylabel('('+ylab+')')
