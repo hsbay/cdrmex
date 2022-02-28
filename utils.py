@@ -16,10 +16,11 @@ from tempfile import mkdtemp
 import numpy as np
 import expectexception
 from datetime import datetime
+import matplotlib as mpl
+from matplotlib import cm
 from matplotlib import pyplot as plt
 import matplotlib.dates as mdates
 import matplotlib.ticker as ticker
-# %matplotlib inline
 import f90nml
 from dateutil.relativedelta import relativedelta
 from openscm_units import unit_registry
@@ -81,7 +82,7 @@ def plthelpr(pltax,plt,**kwargs):
     pltax.xaxis.set_major_locator(mlocator)
     pltax.xaxis.set_major_formatter(formatter)
     pltax.xaxis.set_minor_locator(minloc)
-    if kwargs['profile'] == 'pub' or kwargs['profile'] == 'emiss':
+    if kwargs['profile'] == 'full':
         wh = 'both'
     else:
         wh = 'major'
@@ -89,7 +90,7 @@ def plthelpr(pltax,plt,**kwargs):
     if 'clr' in kwargs:
         clr = kwargs['clr']
     else:
-        clr = '.80'
+        clr = 'lightgray'
 
     pltax.grid(which=wh, linewidth=0.5, color=clr)
     plt.tight_layout(pad=0.6, h_pad=1.5)
