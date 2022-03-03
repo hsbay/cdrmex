@@ -16,10 +16,11 @@ from tempfile import mkdtemp
 import numpy as np
 import expectexception
 from datetime import datetime
+import matplotlib as mpl
+from matplotlib import cm
 from matplotlib import pyplot as plt
 import matplotlib.dates as mdates
 import matplotlib.ticker as ticker
-# %matplotlib inline
 import f90nml
 from dateutil.relativedelta import relativedelta
 from openscm_units import unit_registry
@@ -31,6 +32,9 @@ from pymagicc.io import MAGICCData, read_cfg_file
 from pymagicc.io.utils import _get_openscm_var_from_filepath
 from pymagicc.scenarios import zero_emissions
 from pymagicc.utils import get_date_time_string
+
+degC = '$^{\circ}$C'
+wm2 = '$W / m^2$'
 
 # Plothelper, Set up matplotlib defs
 # plthelpr(Plot axes, plot, setables='foo')
@@ -45,7 +49,7 @@ def gline(profile):
         start = 1850
         end = 2125
     elif profile == 'emiss':
-        start = 2010
+        start = 1925
         end = 2125
     else:
         start = graphstart
@@ -53,11 +57,24 @@ def gline(profile):
     x = datetime(start,1,1,0), datetime(end,1,1,1)
     return(x)
 
+def txthelpers(title, ylabel):
+    if ylabel == 'K':
+       ylabel = degC
+    elif 'W' in ylabel:
+        ylabel = wm2
+    elif 'CO2e' in ylabel:
+        ylabel = 'CO$_2$eq ppm'
+    if '2' in title:
+        st = re.compile(r'(N|O)2')
+        title = st.sub(r'\1$_2$',title)
+    return(title, ylabel)
+
 def plthelpr(pltax,plt,**kwargs):
     x = gline(kwargs['profile'])
     mlocator = mdates.YearLocator(50, month=1, day=1)
     minloc = mdates.YearLocator(10, month=1, day=1)
     formatter = mdates.ConciseDateFormatter(mlocator)
+    var, ylab = txthelpers(title, ylabel)
     pltax.set_title(var)                        
     pltax.set_xlim(x)
     pltax.set_ylabel('('+ylab+')')
@@ -65,7 +82,7 @@ def plthelpr(pltax,plt,**kwargs):
     pltax.xaxis.set_major_locator(mlocator)
     pltax.xaxis.set_major_formatter(formatter)
     pltax.xaxis.set_minor_locator(minloc)
-    if kwargs['profile'] == 'pub' or kwargs['profile'] == 'emiss':
+    if kwargs['profile'] == 'full':
         wh = 'both'
     else:
         wh = 'major'
@@ -73,14 +90,14 @@ def plthelpr(pltax,plt,**kwargs):
     if 'clr' in kwargs:
         clr = kwargs['clr']
     else:
-        clr = '.80'
+        clr = 'lightgray'
 
     pltax.grid(which=wh, linewidth=0.5, color=clr)
     plt.tight_layout(pad=0.6, h_pad=1.5)
 
-def finddate(var, function, df, datest=2005, scen='CCCx2050'):
-    droplevels = ['climate_model','model','todo', 'scenario']
-    pf = df.xs(('MAGICC6','CDRex','not_relevant', scen, ), 
+def finddate(var, function, df, scen, datest=2005):
+    droplevels = ['climate_model','todo', 'scenario']
+    pf = df.xs(('MAGICC6','not_relevant', scen, ), 
                  level=droplevels,
                  drop_level=True).xs(var, level='variable').loc[:,datetime(datest,1,1):]
     if 'min' in function:
