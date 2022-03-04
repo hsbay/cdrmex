@@ -14,6 +14,7 @@ from os.path import abspath, basename, dirname, exists, isfile, join, split
 from subprocess import PIPE
 from tempfile import mkdtemp
 import numpy as np
+import pandas as pd
 import expectexception
 from datetime import datetime
 import matplotlib as mpl
@@ -25,6 +26,7 @@ import f90nml
 from dateutil.relativedelta import relativedelta
 from openscm_units import unit_registry
 from scmdata import run_append
+from scmdata import ScmRun
 
 import pymagicc
 from pymagicc.config import _wine_installed, config
@@ -35,6 +37,27 @@ from pymagicc.utils import get_date_time_string
 
 degC = '$^{\circ}$C'
 wm2 = '$W / m^2$'
+
+# Load scen or concentration in file
+def loadfile(infile, scen, SCEN_DIR):
+    cwd = split(abspath('__file__'))[0]
+
+    if not 'SCEN_DIR':
+        SCEN = 'SCEN'
+    else:
+        try:
+            SCEN = SCEN_DIR
+            SCEN_DIRa = join(cwd, SCEN)
+            scen = join(SCEN_DIRa, infile)
+            if isfile(infile) is False:
+                raise FileNotFoundError from FileNotFoundError
+        
+        except FileNotFoundError:
+            SCEN = 'SCEN'
+    SCEN_DIR = join(cwd, SCEN)
+    return(join(SCEN_DIR, infile))
+
+#onepctcdr = join(SCEN_DIR, '1PCTCDR_CO2_CONC.IN')
 
 # Plothelper, Set up matplotlib defs
 # plthelpr(Plot axes, plot, setables='foo')
@@ -138,24 +161,13 @@ def diagnose_tcr_ecs_tcre(direction, **kwargs):
 
     global abrupt0p5
     global onepctcdr
-    cwd = split(abspath('__file__'))[0]
-
-    if not 'SCEN_DIR' in kwargs:
-        SCEN = 'SCEN'
-    else:
-        try:
-            SCEN = kwargs['SCEN_DIR']
-            SCEN_DIR = join(cwd, SCEN)
-            abrupt0p5 = join(SCEN_DIR, 'ABRUPT0P5XCO2_CO2_CONC.IN')
-            onepctcdr = join(SCEN_DIR, '1PCTCDR_CO2_CONC.IN')
-            for file in (abrupt0p5, onepctcdr):
-               if isfile(file) is False:
-                   raise FileNotFoundError from FileNotFoundError
-        except FileNotFoundError:
-            SCEN = 'SCEN'
-    SCEN_DIR = join(cwd, SCEN)
-    abrupt0p5 = join(SCEN_DIR, 'ABRUPT0P5XCO2_CO2_CONC.IN')
-    onepctcdr = join(SCEN_DIR, '1PCTCDR_CO2_CONC.IN')
+    SCEN_DIR = 'SCEN'
+    scens = []
+    cmip = { 'abrupt05' : ['ABRUPT0P5XCO2_CO2_CONC.IN', 'data' ], 'onepctcdr' : ['1PCTCDR_CO2_CONC.IN', 'data']}
+    for scen in cmip.keys():
+         cmip[scen][1] = (loadfile(cmip[scen][0], scen, SCEN_DIR))
+    abrupt0p5 = cmip['abrupt05'][1]
+    onepctcdr = cmip['onepctcdr'][1]
 
     ecscfg = { 'startyear' : 1795,
         'endyear' : 4321,
@@ -326,5 +338,41 @@ def get_tcr_tcr_start_yr_from_CO2_concs( df_co2_concs):
     tcr_time = tcr_start_time + relativedelta(years=70)
 
     return tcr_time, tcr_start_time
+
+def iamc_exp(scenfile, scenname, SCEN_DIR):
+# Reshape Image 3.01 SSP1-1.9 to match MAGICC6 format
+# Convert to GtC, N, S
+
+    #ys = np.arange(2010,2110,10)
+    scenfh = loadfile(scenfile, scenname, SCEN_DIR)
+    scen = pd.read_csv(scenfh)
+    svars = scen['variable']
+    sunits = scen['unit']
+    sdata = scen.iloc[0:23,5:]
+    scen = ScmRun(data=sdata.T,
+                    index=scen.columns[5:],
+                    columns={
+                        'climate_model': 'unspecified',
+                        'model': 'IMAGE',
+                        'region': 'World',
+                        'scenario' : scenname,
+                        'todo':'SET',
+                        'unit' : sunits,
+                        'variable' : svars })
+    scendf = scen.timeseries()
+    scendf = scendf.rename({'Emissions|CO2|AFOLU':'Emissions|CO2|MAGICC AFOLU'}, axis='index')
+    scendf = scendf.rename({'Mt CO2/yr':'Gt C/yr'}, axis='index')
+    scendf.iloc[5] = scendf.iloc[5] / 3664
+    scendf.iloc[6] = scendf.iloc[6] / 3664
+    scendf = scendf.rename({'Emissions|HFC245ca':'Emissions|HFC245fa'}, axis='index')
+    scendf = scendf.rename({'kt N2O/yr':'Mt N2ON/ yr'}, axis='index')
+    scendf.iloc[15] = scendf.iloc[15] / 1400.7
+    scendf = scendf.rename({'Mt NH3/yr':'Mt N/ yr'}, axis='index')
+    scendf = scendf.rename({'Mt NO2/yr':'Mt N/ yr'}, axis='index')
+    scendf.iloc[17] = scendf.iloc[17] / 3.286
+    scendf = scendf.rename({'Mt SO2/yr':'Mt S/ yr'}, axis='index')
+    scendf.iloc[21] = scendf.iloc[21] / 1.998
+    pd.set_option('precision', 4) 
+    return(scendf)
 
 
