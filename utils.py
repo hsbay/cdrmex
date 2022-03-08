@@ -81,8 +81,9 @@ def gline(profile):
     return(x)
 
 def txthelpers(title, ylabel):
-    if ylabel == 'K':
-       ylabel = degC
+    if 'tas' not in title:
+       if ylabel == 'K':
+          ylabel = degC
     elif 'W' in ylabel:
         ylabel = wm2
     elif 'CO2e' in ylabel:
