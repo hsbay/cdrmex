@@ -310,7 +310,7 @@ def get_tcr_tcre_from_diagnosis_results( results_tcr_tcre_run):
     years = global_inverse_co2_emms['year'].values.squeeze()
 
     tcre = 1000 * tcr / tcre_cumulative_emms
-    tcre = (tcre, 'kelvin / 1000 GtC')
+    tcre = (tcre, 'K / 1000 GtC')
     return tcr, tcre 
 
 def get_ecs_ecs_start_yr_from_CO2_concs( df_co2_concs):
