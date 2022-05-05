@@ -67,13 +67,13 @@ def gline(profile):
     # Graph start and end, adjust the dates below
     if profile == 'full':
         start = 1700
-        end = 2700
+        end = 2550
     elif profile == 'pub':
         start = 1850
         end = 2125
     elif profile == 'emiss':
-        start = 1925
-        end = 2125
+        start = 1950
+        end = 2105
     else:
         start = graphstart
         end = graphend
