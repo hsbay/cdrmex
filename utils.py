@@ -67,13 +67,13 @@ def gline(profile):
     # Graph start and end, adjust the dates below
     if profile == 'full':
         start = 1700
-        end = 2700
+        end = 2550
     elif profile == 'pub':
         start = 1850
         end = 2125
     elif profile == 'emiss':
-        start = 1925
-        end = 2125
+        start = 1950
+        end = 2105
     else:
         start = graphstart
         end = graphend
@@ -310,7 +310,7 @@ def get_tcr_tcre_from_diagnosis_results( results_tcr_tcre_run):
     years = global_inverse_co2_emms['year'].values.squeeze()
 
     tcre = 1000 * tcr / tcre_cumulative_emms
-    tcre = (tcre, 'kelvin / 1000 GtC')
+    tcre = (tcre, 'K / 1000 GtC')
     return tcr, tcre 
 
 def get_ecs_ecs_start_yr_from_CO2_concs( df_co2_concs):
