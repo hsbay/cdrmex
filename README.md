@@ -38,7 +38,8 @@ git clone https://github.com/openscm/pymagicc
 cd pymagicc
 make venv
 ./venv/bin/pip install --editable .
-pip install ipywidgets appmode
+./venv/bin/pip install ipywidgets appmode
+./venv/bin/pip install -r requirements.txt
 jupyter nbextension enable --py --sys-prefix widgetsnbextension
 jupyter nbextension     enable --py --sys-prefix appmode
 jupyter serverextension enable --py --sys-prefix appmode
