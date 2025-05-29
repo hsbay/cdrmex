@@ -1,13 +1,18 @@
 # CDRMEx
 Carbon Dioxide Removal (CDR) Modeling Experiments
 
-##### CC-BY-4.0, 2020 Shannon A. Fiume
+##### CC-BY-4.0, 2020-2024 [Shannon A. Fiume](https://github.com/safiume)
 
 This project models highly speculative Carbon Dioxide Removal to understand
 its effects and speculate how much carbon may need to be removed to return to a
-carbon dioxide concentration of 280 ppm. The experiments are performed in MAGICC6.8
-and have been run on pymagicc. The repo contains the scenario input files for MAGICC
-and a notebook that outlines the experiments and results.
+carbon dioxide concentration of 300 ppm by mid-century and essentially 0ºC by 2100. 
+The experiments are performed in MAGICC6.8 and have been run on pymagicc. 
+The repo contains the scenario input files for MAGICC and a notebook that 
+outlines the experiments and results.
+
+For best-effort scientific findings from a citizen scientist, see my  
+[preprint](https://doi.org/10.31223/x5K37c) and 
+[AGU'23 poster](https://doi.org/10.22541/essoar.170365323.31209497/v1).
 
 The experiments are shown in [ONCtests.ipynb](ONCtests.ipynb) which is 
 a jupyter notebook that runs pymagicc, and requires windows or 
